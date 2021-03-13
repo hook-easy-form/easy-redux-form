@@ -11,6 +11,10 @@ module.exports = {
         path: path.join(__dirname, "/dist"),
         filename: "index_bundle.js"
     },
+    devServer: {
+        compress: true,
+        port: 3000,
+    },
     module: {
         rules: [{
             test: /\.js$/,

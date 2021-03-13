@@ -1,7 +1,8 @@
-type Test = (a: number, b: number) => number;
-type Test2 = (a: number, b: number) => number;
-type Test3 = (a: number, b: number) => number;
+import { initialState as formInitialState } from './redux/reducer';
+import { middleware as formMiddleware } from './redux/middleware';
 
-export const test: Test = (a, b) => a + b;
-export const test2: Test2 = (a, b) => a * b;
-export const test3: Test3 = (a, b) => a / b;
+export { default as reducer } from './redux/reducer';
+export { default as useFromRedux } from './hooks/useFormRedux';
+export { default as useField } from './hooks/useField';
+
+export { formInitialState, formMiddleware };
