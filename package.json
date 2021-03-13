@@ -2,13 +2,15 @@
   "name": "easy-redux-form",
   "version": "1.0.0",
   "description": "Easy manager for forms in react with redux",
-  "main": "lib/index.js",
-  "rollupBuild": "build/index.js",
+  "main": "build/index.js",
   "scripts": {
-    "build": "npm run clean && tsc -p . && rollup -c rollup.config.js",
-    "postbuild": "cp -R declaration build/",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/index.ts",
-    "clean": "rimraf lib/* && rimraf build/*"
+    "build:full": "npm run clean && npm run build:ts && npm run build:rollup && npm run cp-types",
+    "build:rollup": "rollup -c",
+    "build:ts": "tsc -p .",
+    "cp-types": "cp -R lib/declaration build/",
+    "dev": "nodemon --watch src -e ts, --exec npm run dev:start",
+    "clean": "rimraf lib/* && rimraf build/*",
+    "dev:start": "npm run clean && npm run build:ts"
   },
   "files": [
     "build"

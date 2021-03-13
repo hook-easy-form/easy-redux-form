@@ -9,7 +9,7 @@ export default {
 	input: 'lib/index.js',
 	output: [
     {
-      file: pkg.rollupBuild,
+      file: pkg.main,
       format: "cjs",
       sourcemap: true
     },

@@ -4,6 +4,7 @@ lib
 build
 coverage
 declaration
+client
 
 .vscode
 .DS_store
