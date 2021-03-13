@@ -31,21 +31,18 @@ const initializeForm: InitializeFormReducer = (state, p) => {
     payload: { initialValues },
   } = p;
 
-  const values =
-    initialValues && Object.keys(initialValues).length !== 0
-      ? initialValues
-      : {};
   return {
     ...state,
     [form]: {
       fields: {},
-      values,
+      values: {},
       errors: {},
-      initialValues: values,
+      initialValues: initialValues || {},
       touched: {},
       submitted: false,
       valid: false,
       pristine: true,
+      canBeValidated: true,
     },
   };
 };
@@ -56,19 +53,18 @@ const initializeField: InitializeFieldReducer = (state, p) => {
     payload: { type },
   } = p;
 
-  const value = getValue(state[form].values[field], type);
+  const value = getValue(state[form].initialValues[field], type);
 
-  // TODO fix initialize for values
-  const initialValues = getValue(state[form].initialValues[field], type);
   return {
     ...state,
     [form]: {
       ...state[form],
       fields: { ...state[form].fields, [field]: true },
       values: { ...state[form].values, [field]: value },
-      initialValues: { ...state[form].initialValues, [field]: initialValues },
+      initialValues: { ...state[form].initialValues, [field]: value },
       errors: { ...state[form].errors, [field]: '' },
       touched: { ...state[form].touched, [field]: false },
+      canBeValidated: false,
     },
   };
 };
@@ -86,6 +82,7 @@ const destroyField: DestroyFieldReducer = (state, p) => {
       values: rmFieldsFromObject(state[form].values, [field]),
       errors: rmFieldsFromObject(state[form].errors, [field]),
       touched: rmFieldsFromObject(state[form].touched, [field]),
+      canBeValidated: false,
     },
   };
 };
@@ -107,6 +104,7 @@ const changeField: ChangeFieldReducer = (state, p) => {
       ...state[form],
       values,
       pristine: getPristineProperty(values, state[form].initialValues),
+      canBeValidated: true,
     },
   };
 };
@@ -123,6 +121,7 @@ const onBlurField: OnBlurFieldReducer = (state, p) => {
       touched: {
         ...state[form].touched,
         [field]: true,
+        canBeValidated: false,
       },
     },
   };
@@ -149,7 +148,7 @@ const submit: SetSubmittedReducer = (state, p) => {
     meta: { form },
     payload: { submitted },
   } = p;
-
+  // TODO finish this action
   return {
     ...state,
     [form]: {
@@ -161,7 +160,7 @@ const submit: SetSubmittedReducer = (state, p) => {
 
 export default function formReducer(
   state: IFormState = initialState,
-  action: FormActionTypes
+  action: FormActionTypes,
 ): IFormState {
   switch (action.type) {
     case INITIALIZE_FORM:

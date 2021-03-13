@@ -14,6 +14,7 @@ export type IFormState = {
     submitted: boolean;
     valid: boolean;
     pristine: boolean;
+    canBeValidated: boolean;
   };
 };
 

@@ -8,7 +8,7 @@ type DoSubmit = { name: string; cb: OnSubmit };
 
 export const doSubmit = ({ name, cb }: DoSubmit) => (
   dispatch: Dispatch,
-  getState: () => IState
+  getState: () => IState,
 ) => {
   const meta = { form: name, field: '' };
   dispatch(submitting({ meta, payload: { submitted: true } }));
@@ -23,6 +23,6 @@ export const doSubmit = ({ name, cb }: DoSubmit) => (
     })
     .catch(() => null) // TODO trigger validate
     .finally(() =>
-      dispatch(submitting({ meta, payload: { submitted: false } }))
+      dispatch(submitting({ meta, payload: { submitted: false } })),
     );
 };

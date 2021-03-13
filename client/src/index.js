@@ -1,12 +1,20 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+
 import App from './app';
 
-const rootEl = document.getElementById('app');
+import store from './store';
 
-
-render(<App />, rootEl);
+render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('app'),
+);
 
 if (module.hot) {
-    module.hot.accept();
+  module.hot.accept();
 }

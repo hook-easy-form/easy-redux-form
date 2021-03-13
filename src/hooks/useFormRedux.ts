@@ -5,12 +5,11 @@ import { initializeForm, setValidation } from '../redux/actions';
 import { FormOptions, FormProps } from '../types/useForm.types';
 import { IState, TValues } from '../types/state.types';
 import { useCreateFormComponent } from './useCreateFormComponent';
-import { useDidUpdateEffect } from './useDidUpdateEffect';
 import { doSubmit } from '../redux/async.action';
 
 export default function useForm(
   formName: string,
-  { validate, initialValues, onSubmit }: FormOptions
+  { validate, initialValues, onSubmit }: FormOptions,
 ) {
   const formData: React.MutableRefObject<FormProps> = useRef({
     formName,
@@ -22,7 +21,12 @@ export default function useForm(
   const values = useSelector((s: IState) =>
     s.form[formData.current.formName]
       ? s.form[formData.current.formName].values
-      : {}
+      : {},
+  );
+  const canBeValidated = useSelector((s: IState) => 
+    s.form[formData.current.formName]
+      ? s.form[formData.current.formName].canBeValidated
+      : {},
   );
 
   useEffect(() => {
@@ -33,11 +37,11 @@ export default function useForm(
     }
   }, [form, dispatch]);
 
-  useDidUpdateEffect(() => {
-    if (Object.keys(values).length !== 0) {
+  useEffect(() => {
+    if (canBeValidated && Object.keys(values).length !== 0) {
       doValidate(values);
     }
-  }, [values, dispatch]);
+  }, [values, canBeValidated, dispatch]);
 
   const doValidate = useCallback(
     (v: TValues) => {
@@ -47,7 +51,7 @@ export default function useForm(
         dispatch(setValidation({ meta, payload: validator(v) }));
       }
     },
-    [dispatch]
+    [dispatch],
   );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -58,7 +62,7 @@ export default function useForm(
       doSubmit({
         name: formData.current.formName,
         cb: formData.current.options.onSubmit,
-      })
+      }),
     );
   };
 

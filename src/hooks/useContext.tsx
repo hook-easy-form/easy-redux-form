@@ -17,7 +17,7 @@ export default function useFormContext(): TFormContext {
   const ctx = React.useContext(FormContext);
 
   if (!ctx) {
-    throw new Error(`You are trying to use the form API outside of a form!`);
+    throw new Error('You are trying to use the form API outside of a form!');
   }
 
   return ctx;

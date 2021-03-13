@@ -1,28 +1,23 @@
 import sourceMap from 'rollup-plugin-sourcemaps';
-import commonjs from "rollup-plugin-commonjs";
-import external from "rollup-plugin-peer-deps-external";
-import resolve from "rollup-plugin-node-resolve";
+// import { nodeResolve } from '@rollup/plugin-node-resolve';
+// import commonjs from '@rollup/plugin-commonjs';
+// import { uglify } from 'rollup-plugin-uglify';
 
 import pkg  from './package.json';
 
 export default {
-	input: 'lib/index.js',
-	output: [
+  input: 'lib/index.js',
+  output: [
     {
       file: pkg.main,
-      format: "cjs",
-      sourcemap: true
+      format: 'cjs',
+      sourcemap: true,
     },
-    // {
-    //   file: pkg.module,
-    //   format: "es",
-    //   sourcemap: true
-    // }
   ],
-	plugins: [
-		sourceMap(),
-		external(),
-    resolve(),
-    commonjs()
-	]
-}
+  plugins: [
+    sourceMap(),
+    // uglify(),
+    // nodeResolve(),
+    // commonjs(),
+  ],
+};

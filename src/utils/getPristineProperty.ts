@@ -2,7 +2,7 @@ import { TInitialValues, TValues } from '../types/state.types';
 
 export const getPristineProperty = (
   values: TValues,
-  initialValues: TInitialValues
+  initialValues: TInitialValues,
 ): boolean => {
   return Object.keys(values).reduce((acc, el) => {
     if (!acc) return acc;

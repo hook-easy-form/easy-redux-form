@@ -8,9 +8,10 @@
     "build:rollup": "rollup -c",
     "build:ts": "tsc -p .",
     "cp-types": "cp -R lib/declaration build/",
+    "cp-to-client": "cp -R lib client/",
     "dev": "nodemon --watch src -e ts, --exec npm run dev:start",
     "clean": "rimraf lib/* && rimraf build/*",
-    "dev:start": "npm run clean && npm run build:ts"
+    "dev:start": "npm run clean && npm run build:ts && npm run cp-to-client"
   },
   "files": [
     "build"
@@ -25,6 +26,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
     "@types/node": "^14.14.34",
     "@types/react": "^17.0.3",
     "@types/react-redux": "^7.1.16",
@@ -38,10 +41,8 @@
     "react-redux": "^7.2.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.41.2",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-uglify": "^6.0.4",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }

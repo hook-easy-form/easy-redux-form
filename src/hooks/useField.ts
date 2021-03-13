@@ -16,11 +16,11 @@ let id = 0;
 
 export default function useField(
   fieldName: string,
-  { type = 'text' }: FieldOptions = {}
+  { type = 'text' }: FieldOptions = {},
 ) {
   if (!fieldName) {
     throw new Error(
-      `useField: A field is required to use this hook. eg, useField('myField', options)`
+      'useField: A field is required to use this hook. eg, useField(\'myField\', options)',
     );
   }
 
@@ -36,9 +36,7 @@ export default function useField(
   const ctxRef: React.MutableRefObject<TFormContext> = useRef(null);
   ctxRef.current = ctx;
 
-  const form = useSelector((state: IState) => {
-    return state.form[ctx ? ctx.formName : ''];
-  });
+  const form = useSelector((s: IState) => s.form[ctx ? ctx.formName : '']);
 
   useEffect(() => {
     const fieldName = inputProps.current.name;
@@ -49,7 +47,7 @@ export default function useField(
           field: inputProps.current.name,
         };
         dispatch(
-          initializeField({ meta, payload: inputProps.current.options })
+          initializeField({ meta, payload: inputProps.current.options }),
         );
       }
     }
@@ -64,7 +62,7 @@ export default function useField(
             field: inputProps.current.name,
           },
           payload: {},
-        })
+        }),
       );
     };
   }, [dispatch]);
@@ -78,10 +76,12 @@ export default function useField(
       };
       const v = form && form.values[inputProps.current.name];
       const type = inputProps.current.options.type;
+      const value = getValue(v, type);
       return {
-        value: getValue(v, type),
+        value,
         name: inputProps.current.name,
         type,
+        checked: type === 'checkbox' ? value : undefined,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           const { value, type, checked } = e.target;
           const inputValue = type === 'checkbox' ? checked : value;
@@ -97,7 +97,7 @@ export default function useField(
         ...rest,
       };
     },
-    [dispatch, form]
+    [dispatch, form],
   );
 
   const getMeta = useCallback(() => {
