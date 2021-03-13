@@ -1,0 +1,37 @@
+{
+  "name": "easy-redux-form",
+  "version": "1.0.0",
+  "description": "Easy manager for forms in react with redux",
+  "main": "lib/index.js",
+  "rollupBuild": "build/index.js",
+  "scripts": {
+    "build": "npm run clean && tsc -p . && rollup -c rollup.config.js",
+    "postbuild": "cp -R declaration build/",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec \"ts-node\" src/index.ts",
+    "clean": "rimraf lib/* && rimraf build/*"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "react",
+    "hooks",
+    "redux",
+    "typescript",
+    "form"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.34",
+    "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.41.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
