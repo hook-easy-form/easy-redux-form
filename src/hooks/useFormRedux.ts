@@ -61,6 +61,7 @@ export default function useForm(
     await dispatch(
       doSubmit({
         name: formData.current.formName,
+        validator: formData.current.options.validate,
         cb: formData.current.options.onSubmit,
       }),
     );

@@ -121,17 +121,21 @@ const onBlurField: OnBlurFieldReducer = (state, p) => {
       touched: {
         ...state[form].touched,
         [field]: true,
-        canBeValidated: false,
       },
+      canBeValidated: false,
     },
   };
 };
 
 const setValidation: SetValidationReducer = (state, p) => {
   const {
-    meta: { form },
+    meta: { form, setTouchedForAllValues },
     payload,
   } = p;
+
+  const touched = setTouchedForAllValues !== undefined && setTouchedForAllValues !== false
+    ? Object.keys(state[form].touched).reduce((a, e) => ({ ...a, [e]: true }), {})
+    : state[form].touched;
 
   return {
     ...state,
@@ -139,6 +143,7 @@ const setValidation: SetValidationReducer = (state, p) => {
       ...state[form],
       errors: payload,
       valid: getValidProperty(payload),
+      touched,
     },
   };
 };

@@ -23,13 +23,14 @@ function App() {
     initialValues: { email: 'lol@com.com' },
     onSubmit: (v) => console.log('s', v),
   });
-  console.log('form', form.pristine);
+
+  console.log('f', form.valid);
   return (
     <Form>
       <Input name="email" />
       <Input name="password" type="password" />
       <Input name="sex" type="checkbox" />
-      <button type="submit">submit</button>
+      <button type="submit" disabled={form.pristine || form.submitted}>submit</button>
     </Form>
   );
 }

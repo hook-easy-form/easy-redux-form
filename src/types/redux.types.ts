@@ -11,6 +11,7 @@ type Payload<T> = {
   meta: {
     form: string;
     field: string;
+    setTouchedForAllValues?: boolean;
   };
   payload: T;
 };

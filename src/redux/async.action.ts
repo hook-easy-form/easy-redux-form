@@ -1,16 +1,17 @@
 import { Dispatch } from 'redux';
 import { IState } from '../types/state.types';
-import { OnSubmit } from '../types/useForm.types';
+import { DoSubmit } from '../types/useForm.types';
 
-import { submitting } from './actions';
+import { submitting, setValidation } from './actions';
 
-type DoSubmit = { name: string; cb: OnSubmit };
-
-export const doSubmit = ({ name, cb }: DoSubmit) => (
+export const doSubmit = ({ name, cb, validator }: DoSubmit) => (
   dispatch: Dispatch,
   getState: () => IState,
 ) => {
-  const meta = { form: name, field: '' };
+  const meta = { form: name, field: '', setTouchedForAllValues: true };
+
+  const { values } = getState().form[name];
+
   dispatch(submitting({ meta, payload: { submitted: true } }));
   return new Promise((res, rej) => {
     const { valid } = getState().form[name];
@@ -18,10 +19,13 @@ export const doSubmit = ({ name, cb }: DoSubmit) => (
     else rej(null);
   })
     .then(() => {
-      const { values } = getState().form[name];
       return cb(values);
     })
-    .catch(() => null) // TODO trigger validate
+    .catch(() => {
+      if (validator && typeof validator === 'function') {
+        dispatch(setValidation({ meta, payload: validator(values) }));
+      }
+    })
     .finally(() =>
       dispatch(submitting({ meta, payload: { submitted: false } })),
     );
