@@ -3,7 +3,6 @@ node_modules
 lib
 build
 coverage
-declaration
 client/node_modules
 
 .vscode

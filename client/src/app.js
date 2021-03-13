@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 import { test, test2 } from '../../lib';
 
-function App(props) {
-    const [counter, setCounter] = useState(0)
+function App() {
+    const [counter, setCounter] = useState(0);
 
     return (
         <>
