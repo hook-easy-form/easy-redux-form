@@ -56,6 +56,8 @@ const initializeField: InitializeFieldReducer = (state, p) => {
     payload: { type },
   } = p;
 
+  if (!field) return state;
+
   const value = getValue(state[form].initialValues[field], type);
 
   return {
@@ -77,6 +79,8 @@ const destroyField: DestroyFieldReducer = (state, p) => {
     meta: { form, field },
   } = p;
 
+  if (!field) return state;
+
   return {
     ...state,
     [form]: {
@@ -92,21 +96,33 @@ const destroyField: DestroyFieldReducer = (state, p) => {
 const changeField: ChangeFieldReducer = (state, p) => {
   const {
     meta: { form, field },
-    payload: { value },
+    payload: { value, touched },
   } = p;
+
+  const shouldCheckTouched = touched !== undefined && touched !== false;
+
+  if (!field) return state;
 
   const values = {
     ...state[form].values,
     [field]: value,
   };
 
+  const touchedObject = shouldCheckTouched
+    ? { ...state[form].touched, [field]: true }
+    : state[form].touched;
+
+  const anyTouched = shouldCheckTouched ? true : state[form].anyTouched;
+
   return {
     ...state,
     [form]: {
       ...state[form],
       values,
+      touched: touchedObject,
       pristine: getPristineProperty(values, state[form].initialValues),
       canBeValidated: true,
+      anyTouched,
     },
   };
 };
@@ -115,6 +131,8 @@ const onBlurField: OnBlurFieldReducer = (state, p) => {
   const {
     meta: { form, field },
   } = p;
+
+  if (!field) return state;
 
   return {
     ...state,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -7,13 +8,20 @@ import { IState, TValues } from '../types/state.types';
 import { useCreateFormComponent } from './useCreateFormComponent';
 import { doSubmit } from '../redux/async.action';
 
+const defaultOptions = {
+  validate: undefined,
+  initialValues: undefined,
+  onSubmit: () => {},
+  resetAfterSubmit: false,
+};
+
 export default function useForm(
   formName: string,
-  { validate, initialValues, onSubmit }: FormOptions,
+  options: FormOptions,
 ) {
   const formData: React.MutableRefObject<FormProps> = useRef({
     formName,
-    options: { validate, initialValues, onSubmit },
+    options: { ...defaultOptions, ...options },
   });
 
   const dispatch = useDispatch();
@@ -32,7 +40,7 @@ export default function useForm(
   useEffect(() => {
     if (!form) {
       const meta = { form: formData.current.formName, field: 'string;' };
-      const payload = { initialValues };
+      const payload = { initialValues: formData.current.options.initialValues };
       dispatch(initializeForm({ meta, payload }));
     }
   }, [form, dispatch]);
@@ -67,11 +75,7 @@ export default function useForm(
     if (event.preventDefault) event.preventDefault();
 
     await dispatch(
-      doSubmit({
-        name: formData.current.formName,
-        validator: formData.current.options.validate,
-        cb: formData.current.options.onSubmit,
-      }),
+      doSubmit(formData.current),
     );
   };
 

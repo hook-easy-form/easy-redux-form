@@ -10,7 +10,7 @@ export type FormActionTypes = ReturnType<inferValueType<typeof actions>>;
 type Payload<T> = {
   meta: {
     form: string;
-    field: string;
+    field?: string;
     setTouchedForAllValues?: boolean;
   };
   payload: T;
@@ -20,7 +20,7 @@ type Payload<T> = {
 export type InitializeFormPayload = Payload<{ initialValues?: TInitialValues }>;
 export type InitializeFieldPayload = Payload<FieldOptions>;
 export type DestroyFieldPayload = Payload<Record<string, never>>;
-export type ChangeFieldPayload = Payload<{ value: any }>;
+export type ChangeFieldPayload = Payload<{ value: any, touched?: boolean; }>;
 export type OnBlurFieldPayload = Payload<Record<string, never>>;
 export type SetValidationPayload = Payload<TErrors>;
 export type SubmittingPayload = Payload<{ submitted: boolean }>;

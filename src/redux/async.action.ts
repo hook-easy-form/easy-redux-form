@@ -1,32 +1,32 @@
 import { Dispatch } from 'redux';
 import { IState } from '../types/state.types';
-import { DoSubmit } from '../types/useForm.types';
+import { FormProps } from '../types/useForm.types';
 
-import { submitting, setValidation } from './actions';
+import { submitting, setValidation, resetForm } from './actions';
 
-export const doSubmit = ({ name, cb, validator }: DoSubmit) => (
+export const doSubmit = ({ formName, options }: FormProps) => (
   dispatch: Dispatch,
   getState: () => IState,
 ) => {
-  const meta = { form: name, field: '', setTouchedForAllValues: true };
+  const { validate, onSubmit, resetAfterSubmit } = options;
+  const meta = { form: formName, field: '', setTouchedForAllValues: true };
 
-  const { values } = getState().form[name];
+  const { values } = getState().form[formName];
 
   dispatch(submitting({ meta, payload: { submitted: true } }));
   return new Promise((res, rej) => {
-    const { valid } = getState().form[name];
+    const { valid } = getState().form[formName];
     if (valid) res(null);
     else rej(null);
   })
-    .then(() => {
-      return cb(values);
-    })
+    .then(() => onSubmit(values))
     .catch(() => {
-      if (validator && typeof validator === 'function') {
-        dispatch(setValidation({ meta, payload: validator(values) }));
+      if (validate && typeof validate === 'function') {
+        dispatch(setValidation({ meta, payload: validate(values) }));
       }
     })
-    .finally(() =>
-      dispatch(submitting({ meta, payload: { submitted: false } })),
-    );
+    .finally(() => {
+      dispatch(submitting({ meta, payload: { submitted: false } }));
+      if (resetAfterSubmit) dispatch(resetForm({ meta, payload: {} }));
+    });
 };
