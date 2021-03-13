@@ -15,6 +15,7 @@ export type IFormState = {
     valid: boolean;
     pristine: boolean;
     canBeValidated: boolean;
+    anyTouched: boolean;
   };
 };
 

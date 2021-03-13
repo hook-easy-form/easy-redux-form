@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { initializeForm, setValidation } from '../redux/actions';
+import { initializeForm, resetForm, setValidation } from '../redux/actions';
 import { FormOptions, FormProps } from '../types/useForm.types';
 import { IState, TValues } from '../types/state.types';
 import { useCreateFormComponent } from './useCreateFormComponent';
@@ -54,6 +54,14 @@ export default function useForm(
     [dispatch],
   );
 
+  const reset = useCallback(
+    () => {
+      const meta = { form: formData.current.formName, field: '' };
+      dispatch(resetForm({ meta, payload: {} }));
+    },
+    [dispatch],
+  );
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     if (event.persist) event.persist();
     if (event.preventDefault) event.preventDefault();
@@ -74,6 +82,7 @@ export default function useForm(
 
   return {
     Form,
+    reset,
     ...form,
   };
 }

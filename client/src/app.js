@@ -24,13 +24,14 @@ function App() {
     onSubmit: (v) => console.log('s', v),
   });
 
-  console.log('f', form.valid);
+  console.log('form.anyTouched', form.anyTouched);
   return (
     <Form>
       <Input name="email" />
       <Input name="password" type="password" />
       <Input name="sex" type="checkbox" />
       <button type="submit" disabled={form.pristine || form.submitted}>submit</button>
+      <button type="button" disabled={form.pristine || form.submitted} onClick={form.reset}>reset</button>
     </Form>
   );
 }

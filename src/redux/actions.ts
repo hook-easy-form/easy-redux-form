@@ -6,6 +6,7 @@ import {
   DESTROY_FIELD,
   SET_VALIDATION,
   SUBMITTING,
+  RESET_FORM,
 } from './action.types';
 import {
   inferLiteral,
@@ -16,6 +17,7 @@ import {
   DestroyFieldPayload,
   SetValidationPayload,
   SubmittingPayload,
+  ResetPayload,
 } from '../types/redux.types';
 
 export const initializeForm = (payload: InitializeFormPayload) =>
@@ -57,5 +59,11 @@ export const setValidation = (payload: SetValidationPayload) =>
 export const submitting = (payload: SubmittingPayload) =>
   ({
     type: inferLiteral(SUBMITTING),
+    payload,
+  } as const);
+
+export const resetForm = (payload: ResetPayload) =>
+  ({
+    type: inferLiteral(RESET_FORM),
     payload,
   } as const);

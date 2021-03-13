@@ -6,6 +6,7 @@ import {
   DESTROY_FIELD,
   SET_VALIDATION,
   SUBMITTING,
+  RESET_FORM,
 } from './action.types';
 import {
   FormActionTypes,
@@ -16,6 +17,7 @@ import {
   ChangeFieldReducer,
   OnBlurFieldReducer,
   SetSubmittedReducer,
+  ResetFormReducer,
 } from '../types/redux.types';
 import { IFormState } from '../types/state.types';
 import { rmFieldsFromObject } from '../utils/rmFieldsFromObject';
@@ -43,6 +45,7 @@ const initializeForm: InitializeFormReducer = (state, p) => {
       valid: false,
       pristine: true,
       canBeValidated: true,
+      anyTouched: false,
     },
   };
 };
@@ -82,7 +85,6 @@ const destroyField: DestroyFieldReducer = (state, p) => {
       values: rmFieldsFromObject(state[form].values, [field]),
       errors: rmFieldsFromObject(state[form].errors, [field]),
       touched: rmFieldsFromObject(state[form].touched, [field]),
-      canBeValidated: false,
     },
   };
 };
@@ -122,7 +124,7 @@ const onBlurField: OnBlurFieldReducer = (state, p) => {
         ...state[form].touched,
         [field]: true,
       },
-      canBeValidated: false,
+      anyTouched: true,
     },
   };
 };
@@ -133,9 +135,13 @@ const setValidation: SetValidationReducer = (state, p) => {
     payload,
   } = p;
 
-  const touched = setTouchedForAllValues !== undefined && setTouchedForAllValues !== false
+  const shouldCheckTouched = setTouchedForAllValues !== undefined && setTouchedForAllValues !== false;
+
+  const touched = shouldCheckTouched
     ? Object.keys(state[form].touched).reduce((a, e) => ({ ...a, [e]: true }), {})
     : state[form].touched;
+
+  const anyTouched = shouldCheckTouched ? true : state[form].anyTouched;
 
   return {
     ...state,
@@ -144,6 +150,7 @@ const setValidation: SetValidationReducer = (state, p) => {
       errors: payload,
       valid: getValidProperty(payload),
       touched,
+      anyTouched,
     },
   };
 };
@@ -153,12 +160,36 @@ const submit: SetSubmittedReducer = (state, p) => {
     meta: { form },
     payload: { submitted },
   } = p;
-  // TODO finish this action
+
   return {
     ...state,
     [form]: {
       ...state[form],
       submitted,
+    },
+  };
+};
+
+const resetForm: ResetFormReducer = (state, p) => {
+  const {
+    meta: { form },
+  } = p;
+
+  const touched = Object.keys(state[form].touched).reduce((a, e) => ({ ...a, [e]: false }), {});
+  const errors = Object.keys(state[form].errors).reduce((a, e) => ({ ...a, [e]: '' }), {});
+
+  return {
+    ...state,
+    [form]: {
+      ...state[form],
+      values: state[form].initialValues,
+      errors,
+      touched,
+      submitted: false,
+      valid: false,
+      pristine: true,
+      canBeValidated: false,
+      anyTouched: false,
     },
   };
 };
@@ -188,6 +219,9 @@ export default function formReducer(
 
     case SUBMITTING:
       return submit(state, action.payload);
+
+    case RESET_FORM:
+      return resetForm(state, action.payload);
 
     default: {
       return state;
