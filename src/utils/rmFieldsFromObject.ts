@@ -1,6 +1,6 @@
 export const rmFieldsFromObject = (
   originalObject: Record<string, any>,
-  fields: string[]
+  fields: string[],
 ): Record<string, any> => {
   const newObject = { ...originalObject };
 

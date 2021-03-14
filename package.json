@@ -11,7 +11,11 @@
     "cp-to-client": "cp -R lib client/",
     "dev": "nodemon --watch src -e ts, --exec npm run dev:start",
     "clean": "rimraf lib/* && rimraf build/* rimraf declaration/*",
-    "dev:start": "npm run clean && npm run build:ts && npm run cp-to-client"
+    "dev:start": "npm run clean && npm run build:ts && npm run cp-to-client",
+    "test:clear": "jest --clearCache",
+    "test": "jest",
+    "test:watch": "npm run test -- --watchAll",
+    "test:one": "npm run test --"
   },
   "files": [
     "build"
@@ -28,6 +32,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
+    "@types/jest": "^26.0.20",
     "@types/node": "^14.14.34",
     "@types/react": "^17.0.3",
     "@types/react-redux": "^7.1.16",
@@ -35,6 +40,7 @@
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -43,6 +49,7 @@
     "rollup": "^2.41.2",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-uglify": "^6.0.4",
+    "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }
