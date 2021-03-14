@@ -2,7 +2,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { initializeForm, resetForm, setValidation } from '../redux/actions';
+import { initializeForm, resetForm, setValidation, submit } from '../redux/actions';
 import { FormOptions, FormProps } from '../types/useForm.types';
 import { IState, TValues } from '../types/state.types';
 import { useCreateFormComponent } from './useCreateFormComponent';
@@ -74,9 +74,7 @@ export default function useForm(
     if (event.persist) event.persist();
     if (event.preventDefault) event.preventDefault();
 
-    await dispatch(
-      doSubmit(formData.current),
-    );
+    await dispatch(submit(doSubmit(formData.current)));
   };
 
   const Form = useCreateFormComponent({

@@ -24,6 +24,8 @@ import { rmFieldsFromObject } from '../utils/rmFieldsFromObject';
 import { getPristineProperty } from '../utils/getPristineProperty';
 import { getValue } from '../utils/getValue';
 import { getValidProperty } from '../utils/getValidProperty';
+import { changeAllTouchedProperties } from '../utils/changeAllTouchedProperties';
+import { resetAllErrorsProperty } from '../utils/resetAllErrorsProperty';
 
 export const initialState: IFormState = {};
 
@@ -99,30 +101,37 @@ const changeField: ChangeFieldReducer = (state, p) => {
     payload: { value, touched },
   } = p;
 
-  const shouldCheckTouched = touched !== undefined && touched !== false;
-
+  
   if (!field) return state;
-
+  
   const values = {
     ...state[form].values,
     [field]: value,
   };
 
-  const touchedObject = shouldCheckTouched
-    ? { ...state[form].touched, [field]: true }
-    : state[form].touched;
+  const shouldCheckTouched = touched !== undefined && touched !== false;
 
-  const anyTouched = shouldCheckTouched ? true : state[form].anyTouched;
+  if (shouldCheckTouched) {
+    return {
+      ...state,
+      [form]: {
+        ...state[form],
+        values,
+        touched: { ...state[form].touched, [field]: true },
+        pristine: getPristineProperty(values, state[form].initialValues),
+        canBeValidated: true,
+        anyTouched: true,
+      },
+    };
+  }
 
   return {
     ...state,
     [form]: {
       ...state[form],
       values,
-      touched: touchedObject,
       pristine: getPristineProperty(values, state[form].initialValues),
       canBeValidated: true,
-      anyTouched,
     },
   };
 };
@@ -155,11 +164,20 @@ const setValidation: SetValidationReducer = (state, p) => {
 
   const shouldCheckTouched = setTouchedForAllValues !== undefined && setTouchedForAllValues !== false;
 
-  const touched = shouldCheckTouched
-    ? Object.keys(state[form].touched).reduce((a, e) => ({ ...a, [e]: true }), {})
-    : state[form].touched;
+  if (shouldCheckTouched) {
+    const touched = changeAllTouchedProperties(state[form].touched, true);
 
-  const anyTouched = shouldCheckTouched ? true : state[form].anyTouched;
+    return {
+      ...state,
+      [form]: {
+        ...state[form],
+        errors: payload,
+        valid: getValidProperty(payload),
+        touched,
+        anyTouched: true,
+      },
+    };
+  }
 
   return {
     ...state,
@@ -167,8 +185,6 @@ const setValidation: SetValidationReducer = (state, p) => {
       ...state[form],
       errors: payload,
       valid: getValidProperty(payload),
-      touched,
-      anyTouched,
     },
   };
 };
@@ -193,8 +209,8 @@ const resetForm: ResetFormReducer = (state, p) => {
     meta: { form },
   } = p;
 
-  const touched = Object.keys(state[form].touched).reduce((a, e) => ({ ...a, [e]: false }), {});
-  const errors = Object.keys(state[form].errors).reduce((a, e) => ({ ...a, [e]: '' }), {});
+  const touched = changeAllTouchedProperties(state[form].touched, false);
+  const errors = resetAllErrorsProperty(state[form].errors);
 
   return {
     ...state,

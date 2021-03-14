@@ -1,13 +1,13 @@
-import { Dispatch } from 'redux';
+import { Dispatch, AnyAction } from 'redux';
 import { IState } from '../types/state.types';
 import { FormProps } from '../types/useForm.types';
 
 import { submitting, setValidation, resetForm } from './actions';
 
-export const doSubmit = ({ formName, options }: FormProps) => (
-  dispatch: Dispatch,
-  getState: () => IState,
-) => {
+export type DispatchAsync = (dispatch: Dispatch<AnyAction>, getState: () => IState) => Promise<any>;
+export type AsyncAction = (data: FormProps) => (dispatch: Dispatch, getState: () => IState) => Promise<any>
+
+export const doSubmit: AsyncAction = ({ formName, options }) => (dispatch, getState) => {
   const { validate, onSubmit, resetAfterSubmit } = options;
   const meta = { form: formName, field: '', setTouchedForAllValues: true };
 
@@ -19,7 +19,10 @@ export const doSubmit = ({ formName, options }: FormProps) => (
     if (valid) res(null);
     else rej(null);
   })
-    .then(() => onSubmit(values))
+    .then(() => {
+      onSubmit(values);
+      if (resetAfterSubmit) dispatch(resetForm({ meta, payload: {} }));
+    })
     .catch(() => {
       if (validate && typeof validate === 'function') {
         dispatch(setValidation({ meta, payload: validate(values) }));
@@ -27,6 +30,5 @@ export const doSubmit = ({ formName, options }: FormProps) => (
     })
     .finally(() => {
       dispatch(submitting({ meta, payload: { submitted: false } }));
-      if (resetAfterSubmit) dispatch(resetForm({ meta, payload: {} }));
     });
 };

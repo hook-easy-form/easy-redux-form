@@ -1,4 +1,5 @@
 import * as actions from '../redux/actions';
+import { DispatchAsync } from '../redux/async.action';
 import { IFormState, TErrors, TInitialValues } from './state.types';
 import { FieldOptions } from './useField.types';
 
@@ -6,6 +7,8 @@ type inferValueType<T> = T extends { [key: string]: infer U } ? U : never;
 const iL = <U, T extends U>(arg: T): T => arg;
 export const inferLiteral = <T extends string>(arg: T): T => iL(arg);
 export type FormActionTypes = ReturnType<inferValueType<typeof actions>>;
+
+export type SubmitPayload = DispatchAsync;
 
 type Payload<T> = {
   meta: {
