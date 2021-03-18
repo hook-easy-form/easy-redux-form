@@ -2,7 +2,8 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { initializeForm, resetForm, setValidation, submit } from '../redux/actions';
+import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
+import { initializeForm, resetForm, setValidation, submit, updateInitialValues } from '../redux/actions';
 import { FormOptions, FormProps } from '../types/useForm.types';
 import { IState, TValues } from '../types/state.types';
 import { useCreateFormComponent } from './useCreateFormComponent';
@@ -37,9 +38,18 @@ export default function useForm(
       : {},
   );
 
+  useDidUpdateEffect(() => {
+    if (options.initialValues) {
+      const meta = { form: formData.current.formName };
+      const payload = { initialValues: options.initialValues };
+      dispatch(updateInitialValues({ meta, payload }));
+      formData.current.options.initialValues = options.initialValues;
+    }
+  }, [options.initialValues, dispatch]);
+
   useEffect(() => {
     if (!form) {
-      const meta = { form: formData.current.formName, field: 'string;' };
+      const meta = { form: formData.current.formName };
       const payload = { initialValues: formData.current.options.initialValues };
       dispatch(initializeForm({ meta, payload }));
     }
@@ -55,7 +65,7 @@ export default function useForm(
     (v: TValues) => {
       const validator = formData.current.options.validate;
       if (validator && typeof validator === 'function') {
-        const meta = { form: formData.current.formName, field: '' };
+        const meta = { form: formData.current.formName };
         dispatch(setValidation({ meta, payload: validator(v) }));
       }
     },
@@ -64,7 +74,7 @@ export default function useForm(
 
   const reset = useCallback(
     () => {
-      const meta = { form: formData.current.formName, field: '' };
+      const meta = { form: formData.current.formName };
       dispatch(resetForm({ meta, payload: {} }));
     },
     [dispatch],

@@ -8,3 +8,4 @@ export const SUBMITTING = '@form^//SUBMITTING';
 export const CHANGE_FIELD = '@form^//CHANGE_FIELD';
 export const ON_BLUR_FIELD = '@form^//ON_BLUR_FIELD';
 export const RESET_FORM = '@form^//RESET_FORM';
+export const UPDATE_INITIAL_VALUES = '@form^//UPDATE_INITIAL_VALUES';

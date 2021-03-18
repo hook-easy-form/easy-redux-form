@@ -8,6 +8,7 @@ import {
   setValidation,
   submitting,
   submit,
+  updateInitialValues,
 } from './actions';
 import {
   INITIALIZE_FORM,
@@ -19,6 +20,7 @@ import {
   SUBMITTING,
   RESET_FORM,
   SUBMIT,
+  UPDATE_INITIAL_VALUES,
 } from './action.types';
 
 describe('form actions', () => {
@@ -101,5 +103,11 @@ describe('form actions', () => {
     const payload = () => {};
     const expectedAction = { type: SUBMIT, payload };
     expect(submit(payload as any)).toEqual(expectedAction);
+  });
+
+  it('should create an action - updateInitialValues', () => {
+    const payload = { meta: initialMeta, payload: { initialValues: { email: 'some@some.com' }} };
+    const expectedAction = { type: UPDATE_INITIAL_VALUES, payload };
+    expect(updateInitialValues(payload)).toEqual(expectedAction);
   });
 });

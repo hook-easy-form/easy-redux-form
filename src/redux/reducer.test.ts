@@ -7,12 +7,15 @@ import {
   SET_VALIDATION,
   SUBMITTING,
   RESET_FORM,
+  UPDATE_INITIAL_VALUES,
 } from './action.types';
 import formReducer from './reducer';
 import { inferLiteral } from '../types/redux.types';
 import { rmFieldsFromObject } from '../utils/rmFieldsFromObject';
 import { getPristineProperty } from '../utils/getPristineProperty';
 import { getValidProperty } from '../utils/getValidProperty';
+import { changeAllTouchedProperties } from '../utils/changeAllTouchedProperties';
+import { resetAllErrorsProperty } from '../utils/resetAllErrorsProperty';
 
 
 
@@ -27,7 +30,7 @@ describe('form reducer', () => {
       initialValues: {},
       touched: {},
       submitted: false,
-      valid: false,
+      valid: true,
       pristine: true,
       canBeValidated: true,
       anyTouched: false,
@@ -240,7 +243,7 @@ describe('form reducer', () => {
         ...storeWithForm[form as 'test'],
         errors: action.payload.payload,
         valid: getValidProperty(action.payload.payload),
-        touched: Object.keys(storeWithForm[form as 'test'].touched).reduce((a, e) => ({ ...a, [e]: true }), {}),
+        touched: changeAllTouchedProperties(storeWithForm[form as 'test'].touched, true),
         anyTouched: true,
       },
     };
@@ -275,8 +278,8 @@ describe('form reducer', () => {
 
     const { form } = action.payload.meta;
 
-    const touched = Object.keys(storeWithForm[form as 'test'].touched).reduce((a, e) => ({ ...a, [e]: false }), {});
-    const errors = Object.keys(storeWithForm[form as 'test'].errors).reduce((a, e) => ({ ...a, [e]: '' }), {});
+    const touched = changeAllTouchedProperties(storeWithForm[form as 'test'].touched, false);
+    const errors = resetAllErrorsProperty(storeWithForm[form as 'test'].errors);
 
     const result = {
       ...storeWithForm,
@@ -286,7 +289,39 @@ describe('form reducer', () => {
         errors,
         touched,
         submitted: false,
-        valid: false,
+        valid: true,
+        pristine: true,
+        canBeValidated: false,
+        anyTouched: false,
+      },
+    };
+
+    expect(formReducer(storeWithForm, action)).toEqual(result);
+  });
+
+  it('should handle UPDATE_INITIAL_VALUES', () => {
+    const action = {
+      type: inferLiteral(UPDATE_INITIAL_VALUES),
+      payload: { meta: { ...initialMeta }, payload: { initialValues: { email: 'some@some.com' } } },
+    };
+
+    const { form } = action.payload.meta;
+    const { initialValues } = action.payload.payload;
+
+
+    const touched = changeAllTouchedProperties(initialValues, false);
+    const errors = resetAllErrorsProperty(initialValues);
+
+    const result = {
+      ...storeWithForm,
+      [form]: {
+        ...storeWithForm[form as 'test'],
+        values: initialValues,
+        initialValues,
+        errors,
+        touched,
+        submitted: false,
+        valid: true,
         pristine: true,
         canBeValidated: false,
         anyTouched: false,

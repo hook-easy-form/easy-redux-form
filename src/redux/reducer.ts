@@ -7,6 +7,7 @@ import {
   SET_VALIDATION,
   SUBMITTING,
   RESET_FORM,
+  UPDATE_INITIAL_VALUES,
 } from './action.types';
 import {
   FormActionTypes,
@@ -18,6 +19,7 @@ import {
   OnBlurFieldReducer,
   SetSubmittedReducer,
   ResetFormReducer,
+  UpdateInitialValuesReducer,
 } from '../types/redux.types';
 import { IFormState } from '../types/state.types';
 import { rmFieldsFromObject } from '../utils/rmFieldsFromObject';
@@ -44,7 +46,7 @@ const initializeForm: InitializeFormReducer = (state, p) => {
       initialValues: initialValues || {},
       touched: {},
       submitted: false,
-      valid: false,
+      valid: true,
       pristine: true,
       canBeValidated: true,
       anyTouched: false,
@@ -222,7 +224,33 @@ const resetForm: ResetFormReducer = (state, p) => {
       errors,
       touched,
       submitted: false,
-      valid: false,
+      valid: true,
+      pristine: true,
+      canBeValidated: false,
+      anyTouched: false,
+    },
+  };
+};
+
+const updateInitialValues: UpdateInitialValuesReducer = (state, p) => {
+  const {
+    meta: { form },
+    payload: { initialValues },
+  } = p;
+
+  const touched = changeAllTouchedProperties(initialValues, false);
+  const errors = resetAllErrorsProperty(initialValues);
+
+  return {
+    ...state,
+    [form]: {
+      ...state[form],
+      values: initialValues,
+      initialValues,
+      errors,
+      touched,
+      submitted: false,
+      valid: true,
       pristine: true,
       canBeValidated: false,
       anyTouched: false,
@@ -258,6 +286,9 @@ export default function formReducer(
 
     case RESET_FORM:
       return resetForm(state, action.payload);
+
+    case UPDATE_INITIAL_VALUES:
+      return updateInitialValues(state, action.payload);
 
     default: {
       return state;

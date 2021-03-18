@@ -28,6 +28,7 @@ export type OnBlurFieldPayload = Payload<Record<string, never>>;
 export type SetValidationPayload = Payload<TErrors>;
 export type SubmittingPayload = Payload<{ submitted: boolean }>;
 export type ResetPayload = Payload<Record<string, never>>;
+export type UpdateInitialValuesPayload = Payload<{ initialValues: TInitialValues }>;
 
 // actions
 type Action<T> = (p: T) => FormActionTypes;
@@ -36,9 +37,10 @@ export type InitializeFieldAction = Action<InitializeFieldPayload>;
 export type DestroyFieldAction = Action<DestroyFieldPayload>;
 export type ChangeFieldAction = Action<ChangeFieldPayload>;
 export type OnBlurFieldAction = Action<OnBlurFieldPayload>;
-export type SetValidation = Action<SetValidationPayload>;
-export type SetSubmitted = Action<SubmittingPayload>;
-export type ResetForm = Action<ResetPayload>;
+export type SetValidationAction = Action<SetValidationPayload>;
+export type SetSubmittedAction = Action<SubmittingPayload>;
+export type ResetFormAction = Action<ResetPayload>;
+export type UpdateInitialValuesAction = Action<UpdateInitialValuesPayload>;
 
 // reducers
 type Reducer<T> = (s: IFormState, p: T) => IFormState;
@@ -50,3 +52,4 @@ export type OnBlurFieldReducer = Reducer<OnBlurFieldPayload>;
 export type SetValidationReducer = Reducer<SetValidationPayload>;
 export type SetSubmittedReducer = Reducer<SubmittingPayload>;
 export type ResetFormReducer = Reducer<ResetPayload>;
+export type UpdateInitialValuesReducer = Reducer<UpdateInitialValuesPayload>;
