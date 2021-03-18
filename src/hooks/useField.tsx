@@ -14,9 +14,14 @@ import { getValue } from '../utils/getValue';
 
 let id = 0;
 
+const defaultOptions = {
+  type: 'text',
+  value: '',
+};
+
 export default function useField(
   fieldName: string,
-  { type = 'text' }: FieldOptions = {},
+  options: FieldOptions,
 ) {
   if (!fieldName) {
     throw new Error(
@@ -27,7 +32,7 @@ export default function useField(
   const inputProps: React.MutableRefObject<InputProps> = useRef({
     id: id++,
     name: fieldName,
-    options: { type },
+    options: { ...defaultOptions, ...options },
   });
 
   const ctx = useFormContext();
@@ -67,21 +72,29 @@ export default function useField(
     };
   }, [dispatch]);
 
+  const getCheckedProperty = useCallback((v: any) => {
+    const { type, value } = inputProps.current.options;
+
+    if (type === 'checkbox') return v;
+    if (type === 'radio') return value === v;
+    return undefined;
+  }, []);
+
   const getInputProps = useCallback(
     ({ onChange, onBlur, ...rest } = {}) => {
       const meta = {
         form: ctxRef.current ? ctxRef.current.formName : '',
         field: inputProps.current.name,
-        error: '',
       };
+      const { type, value: initialValue } = inputProps.current.options;
+
       const v = form && form.values[inputProps.current.name];
-      const type = inputProps.current.options.type;
       const value = getValue(v, type);
       return {
-        value,
+        value: initialValue || value,
         name: inputProps.current.name,
         type,
-        checked: type === 'checkbox' ? value : undefined,
+        checked: getCheckedProperty(value),
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           const { value, type, checked } = e.target;
           const inputValue = type === 'checkbox' ? checked : value;
@@ -107,9 +120,9 @@ export default function useField(
         error: undefined,
         touched: undefined,
       };
-
+    const { value } = inputProps.current.options;
     return {
-      value: getValue(form.values[inputProps.current.name]),
+      value: value || getValue(form.values[inputProps.current.name]),
       error: form.errors[inputProps.current.name],
       touched: form.touched[inputProps.current.name],
     };

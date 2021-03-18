@@ -6,4 +6,5 @@ export type InputProps = {
 
 export type FieldOptions = {
   type?: string;
+  value?: string;
 };

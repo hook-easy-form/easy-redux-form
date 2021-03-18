@@ -1,0 +1,24 @@
+.input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.input {
+  width: 100%;
+  outline: none;
+}
+
+.checkbox {
+  outline: none;
+}
+
+.error {
+  color: rgb(231, 99, 99);
+  font-size: 12px;
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+}
