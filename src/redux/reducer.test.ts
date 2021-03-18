@@ -101,6 +101,8 @@ describe('form reducer', () => {
         values: rmFieldsFromObject(storeWithForm[form as 'test'].values, [field]),
         errors: rmFieldsFromObject(storeWithForm[form as 'test'].errors, [field]),
         touched: rmFieldsFromObject(storeWithForm[form as 'test'].touched, [field]),
+        initialValues: rmFieldsFromObject(storeWithForm[form as 'test'].initialValues, [field]),
+        canBeValidated: false,
       },
     };
 
