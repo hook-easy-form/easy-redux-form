@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 // LIB 
-import { reducer } from '../../lib';
+import { reducer } from '../lib';
 
 const appReducer = combineReducers({
   form: reducer,

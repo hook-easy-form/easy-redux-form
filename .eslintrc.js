@@ -28,6 +28,7 @@ module.exports = {
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     '@typescript-eslint/explicit-module-boundary-types': 0,
     'react/prop-types': 0,
+    'react/react-in-jsx-scope': 0,
     '@typescript-eslint/no-empty-function': 0,
   },
 };

@@ -5,7 +5,7 @@ import { initialStore } from './initial-state';
 import rootReducer from './reducer';
 
 // LIB 
-import { formMiddleware } from '../../lib';
+import { formMiddleware } from '../lib';
 
 const logger = createLogger({ collapsed: true });
 
