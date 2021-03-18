@@ -91,6 +91,8 @@ const destroyField: DestroyFieldReducer = (state, p) => {
       values: rmFieldsFromObject(state[form].values, [field]),
       errors: rmFieldsFromObject(state[form].errors, [field]),
       touched: rmFieldsFromObject(state[form].touched, [field]),
+      initialValues: rmFieldsFromObject(state[form].initialValues, [field]),
+      canBeValidated: false,
     },
   };
 };

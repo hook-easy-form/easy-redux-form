@@ -10,7 +10,7 @@ export const Input = ({ name, type }) => {
   const { touched, error } = inp.getMeta();
   return (
     <div className={style['input-container']}>
-      <input {...inp.getInputProps()} className={style.input} />
+      <input {...inp.getInputProps()} className={type === 'checkbox' ? style.checkbox : style.input} />
       {touched && error && <span className={style.error}>{error}</span>}
     </div>
   );
