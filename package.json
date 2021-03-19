@@ -9,7 +9,7 @@
     "build:ts": "tsc -p .",
     "cp-types": "cp -R declaration build/",
     "cp-to-client": "cp -R lib client/",
-    "dev": "nodemon --watch src -e ts, --exec npm run dev:start",
+    "dev": "nodemon --watch src -e ts,tsx, --exec npm run dev:start",
     "clean": "rimraf lib/* && rimraf build/* rimraf declaration/*",
     "dev:start": "npm run clean && npm run build:ts && npm run cp-to-client",
     "test:clear": "jest --clearCache",

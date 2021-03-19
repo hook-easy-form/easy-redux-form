@@ -80,12 +80,34 @@ export default function useField(
     return undefined;
   }, []);
 
+  const onChangeHandler = useCallback((onChange) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, type, checked } = e.target;
+
+    const meta = {
+      form: ctxRef.current ? ctxRef.current.formName : '',
+      field: inputProps.current.name,
+    };
+    
+    const inputValue = type === 'checkbox' ? checked : value;
+    const payload = { value: inputValue };
+
+    dispatch(changeField({ meta, payload }));
+    if (typeof onChange === 'function') onChange(e);
+  }, [dispatch]);
+
+  const onBlurHandler = useCallback((onBlur) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const meta = {
+      form: ctxRef.current ? ctxRef.current.formName : '',
+      field: inputProps.current.name,
+    };
+    
+    const payload = {};
+    dispatch(onBlurField({ meta, payload }));
+    if (onBlur) onBlur(e);
+  }, [dispatch]);
+
   const getInputProps = useCallback(
     ({ onChange, onBlur, ...rest } = {}) => {
-      const meta = {
-        form: ctxRef.current ? ctxRef.current.formName : '',
-        field: inputProps.current.name,
-      };
       const { type, value: initialValue } = inputProps.current.options;
 
       const v = form && form.values[inputProps.current.name];
@@ -95,18 +117,8 @@ export default function useField(
         name: inputProps.current.name,
         type,
         checked: getCheckedProperty(value),
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-          const { value, type, checked } = e.target;
-          const inputValue = type === 'checkbox' ? checked : value;
-          const payload = { value: inputValue };
-          dispatch(changeField({ meta, payload }));
-          if (onChange) onChange(e);
-        },
-        onBlur: (e: React.ChangeEvent<HTMLInputElement>) => {
-          const payload = {};
-          dispatch(onBlurField({ meta, payload }));
-          if (onBlur) onBlur(e);
-        },
+        onChange: onChangeHandler(onChange),
+        onBlur: onBlurHandler(onBlur),
         ...rest,
       };
     },
