@@ -19,7 +19,7 @@ export const AllFieldsForm = () => {
 
   return (
     <Form style={{ width: '100%' }}>
-      <Input name="firstName" />
+      <Input name="firstName" onChange={(e) => console.log('e', e)} />
       <Input name="lastName" />
       <Input name="email" type="email" />
       <Input name="sex" type="radio" value="male" />
