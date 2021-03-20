@@ -34,6 +34,7 @@ describe('form reducer', () => {
       pristine: true,
       canBeValidated: true,
       anyTouched: false,
+      form: 'test',
     },
   };
   const initialMeta = { form: 'test' };

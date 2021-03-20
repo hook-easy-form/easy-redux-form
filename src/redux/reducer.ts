@@ -50,6 +50,7 @@ const initializeForm: InitializeFormReducer = (state, p) => {
       pristine: true,
       canBeValidated: true,
       anyTouched: false,
+      form,
     },
   };
 };

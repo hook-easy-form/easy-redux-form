@@ -72,7 +72,7 @@ export default function useField(
     };
   }, [dispatch]);
 
-  const getCheckedProperty = useCallback((v: any) => {
+  const getCheckedProperty = useCallback((v) => {
     const { type, value } = inputProps.current.options;
 
     if (type === 'checkbox') return v;
@@ -90,7 +90,6 @@ export default function useField(
     
     const inputValue = type === 'checkbox' ? checked : value;
     const payload = { value: inputValue };
-
     dispatch(changeField({ meta, payload }));
     if (typeof onChange === 'function') onChange(e);
   }, [dispatch]);
